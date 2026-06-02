@@ -1,0 +1,26 @@
+{
+  "name": "@ddd-ecommerce/ddd-ecommerce-e2e",
+  "version": "0.0.1",
+  "private": true,
+  "nx": {
+    "implicitDependencies": [
+      "@ddd-ecommerce/ddd-ecommerce"
+    ],
+    "targets": {
+      "e2e": {
+        "executor": "@nx/jest:jest",
+        "outputs": [
+          "{projectRoot}/test-output/jest/coverage"
+        ],
+        "options": {
+          "jestConfig": "apps/ddd-ecommerce-e2e/jest.config.cts",
+          "passWithNoTests": true
+        },
+        "dependsOn": [
+          "@ddd-ecommerce/ddd-ecommerce:build",
+          "@ddd-ecommerce/ddd-ecommerce:serve"
+        ]
+      }
+    }
+  }
+}
