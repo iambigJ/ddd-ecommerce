@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:18
+    container_name: ddd_ecommerce_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ddd-ecommerce
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres -d ddd-ecommerce']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - ddd_ecommerce_network
+
+  redis:
+    image: redis:7-alpine
+    container_name: ddd_ecommerce_redis
+    restart: unless-stopped
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - ddd_ecommerce_network
+
+  api-gateway:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ddd_ecommerce_api
+    restart: unless-stopped
+    env_file:
+      - .env.docker
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - '3000:3000'
+    networks:
+      - ddd_ecommerce_network
+
+networks:
+  ddd_ecommerce_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  redis_data:

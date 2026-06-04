@@ -2,19 +2,43 @@
   "name": "@ddd-ecommerce/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "build:copy": "echo \"i18n assets are copied by api-gateway webpack; use nx build @ddd-ecommerce/api-gateway\"",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:push": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio",
+    "lint": "nx run-many -t lint",
+    "lint:fix": "nx run-many -t lint -- --fix"
+  },
   "private": true,
   "dependencies": {
+    "@nestjs/cache-manager": "^3.0.1",
     "@nestjs/common": "^11.0.0",
+    "@nestjs/config": "^4.0.4",
     "@nestjs/core": "^11.0.0",
+    "@nestjs/cqrs": "^11.0.3",
+    "@nestjs/jwt": "^11.0.2",
     "@nestjs/platform-express": "^11.0.0",
     "axios": "^1.6.0",
+    "bcrypt": "^6.0.0",
+    "cache-manager": "^6.4.3",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.2",
+    "drizzle-orm": "^0.45.0",
+    "ioredis": "^5.8.2",
+    "joi": "^18.2.1",
+    "nest-winston": "^1.10.2",
+    "nestjs-i18n": "^10.8.4",
+    "pg": "^8.21.0",
     "reflect-metadata": "^0.1.13",
-    "rxjs": "^7.8.0"
+    "rxjs": "^7.8.0",
+    "winston": "^3.19.0",
+    "winston-daily-rotate-file": "^5.0.0"
   },
   "devDependencies": {
-    "@eslint/js": "^9.8.0",
-    "@nestjs/schematics": "^11.0.0",
+    "@eslint/js": "^9.39.4",
+    "@nestjs/schematics": "^11.1.0",
     "@nestjs/testing": "^11.0.0",
     "@nx/docker": "22.7.5",
     "@nx/eslint": "22.7.5",
@@ -28,7 +52,11 @@
     "@swc-node/register": "~1.11.1",
     "@swc/core": "~1.15.5",
     "@swc/helpers": "~0.5.18",
+    "@types/bcrypt": "^6.0.0",
+    "@types/express": "^5.0.6",
     "@types/node": "20.19.9",
+    "@types/pg": "^8.15.6",
+    "drizzle-kit": "^0.31.10",
     "eslint": "^9.8.0",
     "eslint-config-prettier": "^10.0.0",
     "nx": "22.7.5",
@@ -37,8 +65,5 @@
     "typescript": "~5.9.2",
     "typescript-eslint": "^8.40.0",
     "webpack-cli": "^5.1.4"
-  },
-  "workspaces": [
-    "apps/*"
-  ]
+  }
 }

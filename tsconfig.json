@@ -4,10 +4,22 @@
   "files": [],
   "references": [
     {
-      "path": "./apps/ddd-ecommerce-e2e"
+      "path": "./libs/shared"
     },
     {
-      "path": "./apps/ddd-ecommerce"
+      "path": "./libs/customers"
+    },
+    {
+      "path": "./libs/peyment"
+    },
+    {
+      "path": "./libs/orders"
+    },
+    {
+      "path": "./apps/api-gateway"
+    },
+    {
+      "path": "./libs/products"
     }
   ]
 }

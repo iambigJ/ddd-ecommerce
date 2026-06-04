@@ -1,0 +1,53 @@
+{
+  "auth": {
+    "invalidCredentials": "ایمیل یا رمز عبور نامعتبر است",
+    "missingToken": "توکن احراز هویت الزامی است",
+    "invalidToken": "توکن احراز هویت نامعتبر است",
+    "sessionExpired": "نشست منقضی شده است"
+  },
+  "customers": {
+    "notFound": "مشتری یافت نشد",
+    "emailAlreadyUsed": "این ایمیل قبلاً ثبت شده است",
+    "invalidEmail": "آدرس ایمیل نامعتبر است",
+    "invalidPasswordHash": "رمز عبور نامعتبر است",
+    "invalidName": "نام مشتری نامعتبر است",
+    "emptyPatch": "تغییری ارسال نشده است"
+  },
+  "products": {
+    "notFound": "محصول یافت نشد",
+    "insufficientStock": "موجودی محصول کافی نیست",
+    "emptyPatch": "تغییری ارسال نشده است",
+    "invalidName": "نام محصول نامعتبر است",
+    "invalidPrice": "قیمت محصول نامعتبر است",
+    "invalidStock": "موجودی محصول نامعتبر است"
+  },
+  "orders": {
+    "notFound": "سفارش یافت نشد",
+    "itemNotFound": "آیتم سفارش یافت نشد",
+    "alreadyCheckedOut": "سفارش قبلاً تسویه شده است",
+    "emptyItems": "سفارش آیتمی ندارد",
+    "notEditable": "سفارش در وضعیت فعلی قابل ویرایش نیست",
+    "invalidQuantity": "تعداد آیتم نامعتبر است",
+    "invalidPrice": "قیمت آیتم نامعتبر است",
+    "idempotencyInProgress": "درخواستی با این کلید تکرار در حال پردازش است"
+  },
+  "payments": {
+    "walletNotFound": "کیف پول یافت نشد",
+    "walletInsufficientBalance": "موجودی کیف پول کافی نیست",
+    "walletFailed": "پرداخت از کیف پول ناموفق بود",
+    "invalidAmount": "مبلغ پرداخت نامعتبر است",
+    "idempotencyConflict": "تعارض کلید یکتایی پرداخت",
+    "reservationConflict": "تعارض رزرو کیف پول",
+    "reservationNotFound": "رزرو کیف پول یافت نشد",
+    "reservationNotHeld": "رزرو کیف پول در وضعیت نگه‌داری نیست",
+    "paymentMethodRequired": "روش پرداخت الزامی است",
+    "stripeFailed": "پرداخت Stripe ناموفق بود",
+    "paypalFailed": "پرداخت PayPal ناموفق بود",
+    "providerFailed": "ارائه‌دهنده پرداخت ناموفق بود",
+    "allProvidersFailed": "همه ارائه‌دهندگان پرداخت ناموفق بودند",
+    "notFound": "پرداخت یافت نشد"
+  },
+  "common": {
+    "internalError": "خطای داخلی سرور"
+  }
+}

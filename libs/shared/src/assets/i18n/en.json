@@ -1,0 +1,53 @@
+{
+  "auth": {
+    "invalidCredentials": "Invalid email or password",
+    "missingToken": "Authentication token is required",
+    "invalidToken": "Invalid authentication token",
+    "sessionExpired": "Session has expired"
+  },
+  "customers": {
+    "notFound": "Customer not found",
+    "emailAlreadyUsed": "Email is already registered",
+    "invalidEmail": "Invalid email address",
+    "invalidPasswordHash": "Invalid password",
+    "invalidName": "Invalid customer name",
+    "emptyPatch": "No changes were provided"
+  },
+  "products": {
+    "notFound": "Product not found",
+    "insufficientStock": "Insufficient product stock",
+    "emptyPatch": "No changes were provided",
+    "invalidName": "Invalid product name",
+    "invalidPrice": "Invalid product price",
+    "invalidStock": "Invalid product stock"
+  },
+  "orders": {
+    "notFound": "Order not found",
+    "itemNotFound": "Order item not found",
+    "alreadyCheckedOut": "Order has already been checked out",
+    "emptyItems": "Order has no items",
+    "notEditable": "Order cannot be modified in its current state",
+    "invalidQuantity": "Invalid item quantity",
+    "invalidPrice": "Invalid item price",
+    "idempotencyInProgress": "A request with this idempotency key is already in progress"
+  },
+  "payments": {
+    "walletNotFound": "Wallet not found",
+    "walletInsufficientBalance": "Insufficient wallet balance",
+    "walletFailed": "Wallet payment failed",
+    "invalidAmount": "Invalid payment amount",
+    "idempotencyConflict": "Payment idempotency key conflict",
+    "reservationConflict": "Wallet reservation conflict",
+    "reservationNotFound": "Wallet reservation not found",
+    "reservationNotHeld": "Wallet reservation is not in held state",
+    "paymentMethodRequired": "Payment method is required",
+    "stripeFailed": "Stripe payment failed",
+    "paypalFailed": "PayPal payment failed",
+    "providerFailed": "Payment provider failed",
+    "allProvidersFailed": "All payment providers failed",
+    "notFound": "Payment not found"
+  },
+  "common": {
+    "internalError": "Internal server error"
+  }
+}

@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
     "composite": true,
     "declarationMap": true,
-    "emitDeclarationOnly": true,
     "importHelpers": true,
     "isolatedModules": true,
     "lib": ["es2022"],
@@ -12,10 +12,22 @@
     "noFallthroughCasesInSwitch": true,
     "noImplicitOverride": true,
     "noImplicitReturns": true,
-    "noUnusedLocals": true,
+    "noUnusedLocals": false,
     "skipLibCheck": true,
-    "strict": true,
+    "strict": false,
     "target": "es2022",
-    "customConditions": ["@ddd-ecommerce/source"]
+    "customConditions": ["@ddd-ecommerce/source"],
+    "paths": {
+      "@ddd-ecommerce/shared": ["libs/shared/src/index.ts"],
+      "@ddd-ecommerce/shared/*": ["libs/shared/src/*"],
+      "@ddd-ecommerce/products": ["libs/products/src/index.ts"],
+      "@ddd-ecommerce/products/*": ["libs/products/src/*"],
+      "@ddd-ecommerce/customers": ["libs/customers/src/index.ts"],
+      "@ddd-ecommerce/customers/*": ["libs/customers/src/*"],
+      "@ddd-ecommerce/payment": ["libs/payment/src/index.ts"],
+      "@ddd-ecommerce/payment/*": ["libs/payment/src/*"],
+      "@ddd-ecommerce/orders": ["libs/orders/src/index.ts"],
+      "@ddd-ecommerce/orders/*": ["libs/orders/src/*"]
+    }
   }
 }
