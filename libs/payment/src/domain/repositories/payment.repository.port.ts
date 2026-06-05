@@ -9,6 +9,6 @@ export interface PaymentRepositoryPort {
   findByIdempotencyKey(idempotencyKey: string): Promise<PaymentAggregate | null>;
   findById(id: string): Promise<PaymentAggregate | null>;
   findByOrderId(orderId: string): Promise<PaymentAggregate | null>;
-  findManyByCustomerId(customerId: string): Promise<PaymentAggregate[]>;
+  findManyByOrderIds(orderIds: string[]): Promise<PaymentAggregate[]>;
   save(payment: PaymentAggregate): Promise<PaymentAggregate>;
 }

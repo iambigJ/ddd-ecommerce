@@ -121,10 +121,16 @@ export class OrderAggregate {
   }
 
   assertCanCheckout(): void {
-    if (this.status !== OrderStatusEnum.PENDING) {
+    if (this.status == OrderStatusEnum.PROCESSING) {
       throw new CError({
         status: HttpStatus.CONFLICT,
-        message: 'orders.alreadyCheckedOut',
+        message: 'orders.alreadyProcessing',
+      });
+    }
+    if (this.status == OrderStatusEnum.PAID) {
+      throw new CError({
+        status: HttpStatus.CONFLICT,
+        message: 'orders.alreadyPaid',
       });
     }
 

@@ -14,7 +14,7 @@ export class WalletController {
   constructor(private readonly commandBus: CommandBus) {}
 
   @Post('charge')
-  //this is mock api only for
+  //this is mock api only for testing purposes
   charge(@CurrentUserDec() customer: CurrentUserPayload, @Body() input: ChargeWalletDto) {
     return this.commandBus.execute(
       new ChargeWalletCommand(customer.id, input.amount, input.action),

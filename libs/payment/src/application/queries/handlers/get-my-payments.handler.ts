@@ -1,6 +1,6 @@
 import { Inject } from '@nestjs/common';
-import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
-import { CLogger } from '@ddd-ecommerce/shared';
+import { IQueryHandler, QueryBus, QueryHandler } from '@nestjs/cqrs';
+import { CLogger, GetCustomerOrderIdsQuery } from '@ddd-ecommerce/shared';
 import {
   PAYMENT_REPOSITORY,
   type PaymentRepositoryPort,
@@ -18,14 +18,19 @@ export class GetMyPaymentsHandler
   constructor(
     @Inject(PAYMENT_REPOSITORY)
     private readonly paymentRepository: PaymentRepositoryPort,
+    private readonly queryBus: QueryBus,
     private readonly logger: CLogger,
   ) {
     this.logger.setContext(GetMyPaymentsHandler.name);
   }
 
   async execute(query: GetMyPaymentsQuery): Promise<PaymentResponse[]> {
-    const payments = await this.paymentRepository.findManyByCustomerId(
-      query.customerId,
+    const orderIds = await this.queryBus.execute<GetCustomerOrderIdsQuery, string[]>(
+      new GetCustomerOrderIdsQuery(query.customerId),
+    );
+
+    const payments = await this.paymentRepository.findManyByOrderIds(
+      orderIds,
     );
 
     this.logger.debug('Listed customer payments', {

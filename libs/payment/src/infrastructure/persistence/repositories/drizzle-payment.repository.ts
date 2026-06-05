@@ -1,7 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { asc, desc, eq, inArray } from 'drizzle-orm';
 import { DzService, PaymentProviderEnum, PaymentStatusEnum } from '@ddd-ecommerce/shared';
-import { orders } from '@ddd-ecommerce/orders/infrastructure/presistence/data-model/order.schema';
 import {
   PAYMENT_REPOSITORY,
   PaymentRepositoryPort,
@@ -19,7 +18,6 @@ export class DrizzlePaymentRepository implements PaymentRepositoryPort {
     private readonly drizzleService: DzService<{
       payments: typeof payments;
       paymentAttempts: typeof paymentAttempts;
-      orders: typeof orders;
     }>,
   ) {}
 
@@ -75,52 +73,55 @@ export class DrizzlePaymentRepository implements PaymentRepositoryPort {
     return payment ? this.toAggregate(payment) : null;
   }
 
-  async findManyByCustomerId(customerId: string): Promise<PaymentAggregate[]> {
+  async findManyByOrderIds(orderIds: string[]): Promise<PaymentAggregate[]> {
+    if (orderIds.length === 0) {
+      return [];
+    }
+
     const rows = await this.drizzleService
       .getDb()
-      .select({ payment: payments })
+      .select()
       .from(payments)
-      .innerJoin(orders, eq(payments.orderId, orders.id))
-      .where(eq(orders.customerId, customerId))
+      .where(inArray(payments.orderId, orderIds))
       .orderBy(desc(payments.createdAt), desc(payments.id));
 
-    return this.toAggregatesBatch(rows.map((row) => row.payment));
+    return this.toAggregatesBatch(rows);
   }
 
   async save(payment: PaymentAggregate): Promise<PaymentAggregate> {
-    await this.drizzleService
-      .getDb()
-      .update(payments)
-      .set({
-        status: payment.getStatus(),
-        updatedAt: payment.getUpdatedAt(),
-      })
-      .where(eq(payments.id, payment.getId()));
-
-    await this.drizzleService
-      .getDb()
-      .delete(paymentAttempts)
-      .where(eq(paymentAttempts.paymentId, payment.getId()));
-
-    const attempts = payment.getAttempts();
-    if (attempts.length > 0) {
-      await this.drizzleService
-        .getDb()
-        .insert(paymentAttempts)
-        .values(
-          attempts.map((attempt) => ({
-            id: attempt.id,
-            paymentId: attempt.paymentId,
-            provider: attempt.provider,
-            amount: attempt.amount,
-            status: attempt.status,
-            externalTransactionId: attempt.externalTransactionId,
-            errorMessage: attempt.errorMessage,
-            attemptedAt: attempt.attemptedAt,
-          })),
-        );
-    }
-
+    await this.drizzleService.getDb().transaction(async (tx) => {
+      
+      await tx
+        .update(payments)
+        .set({
+          status: payment.getStatus(),
+          updatedAt: payment.getUpdatedAt(),
+        })
+        .where(eq(payments.id, payment.getId()));
+  
+      await tx
+        .delete(paymentAttempts)
+        .where(eq(paymentAttempts.paymentId, payment.getId()));
+  
+      const attempts = payment.getAttempts();
+      if (attempts.length > 0) {
+        await tx
+          .insert(paymentAttempts)
+          .values(
+            attempts.map((attempt) => ({
+              id: attempt.id,
+              paymentId: attempt.paymentId,
+              provider: attempt.provider,
+              amount: attempt.amount,
+              status: attempt.status,
+              externalTransactionId: attempt.externalTransactionId,
+              errorMessage: attempt.errorMessage,
+              attemptedAt: attempt.attemptedAt,
+            })),
+          );
+      }
+    });
+  
     return payment;
   }
 
