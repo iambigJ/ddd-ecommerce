@@ -1,573 +1,1127 @@
 {
-  "info": {
-    "_postman_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-    "name": "DDD E-Commerce API Gateway",
-    "description": "Postman collection for the ddd-ecommerce api-gateway.\n\nBase URL: `{{baseUrl}}/{{apiPrefix}}`\n\nAuth: run **Register** or **Login** first; `accessToken` is saved to collection variables.\n\nResponses are wrapped: `{ \"success\": true, \"data\": { ... } }`.\n\nOptional header: `x-lang: en` or `fa` for i18n.",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-  },
-  "variable": [
-    { "key": "baseUrl", "value": "http://localhost:3000" },
-    { "key": "apiPrefix", "value": "api" },
-    { "key": "accessToken", "value": "" },
-    { "key": "refreshToken", "value": "" },
-    { "key": "customerEmail", "value": "buyer@example.com" },
-    { "key": "customerPassword", "value": "Password123!" },
-    { "key": "customerName", "value": "Test Buyer" },
-    { "key": "productId", "value": "" },
-    { "key": "orderId", "value": "" },
-    { "key": "orderItemId", "value": "" },
-    { "key": "paymentId", "value": "" }
-  ],
-  "auth": {
-    "type": "bearer",
-    "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
-  },
-  "item": [
-    {
-      "name": "Health",
-      "item": [
-        {
-          "name": "Get Health",
-          "request": {
-            "auth": { "type": "noauth" },
-            "method": "GET",
-            "header": [{ "key": "Accept", "value": "application/json" }],
-            "url": "{{baseUrl}}/{{apiPrefix}}/health"
-          }
-        }
-      ]
-    },
-    {
-      "name": "Customers",
-      "item": [
-        {
-          "name": "Register",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "const res = pm.response.json();",
-                  "if (res.success && res.data?.accessToken) {",
-                  "  pm.collectionVariables.set('accessToken', res.data.accessToken);",
-                  "  pm.collectionVariables.set('refreshToken', res.data.refreshToken);",
-                  "}",
-                  "if (res.data?.customer?.email) {",
-                  "  pm.collectionVariables.set('customerEmail', res.data.customer.email);",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "auth": { "type": "noauth" },
-            "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "x-lang", "value": "en" }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"name\": \"{{customerName}}\",\n  \"email\": \"{{customerEmail}}\",\n  \"password\": \"{{customerPassword}}\"\n}"
-            },
-            "url": "{{baseUrl}}/{{apiPrefix}}/customers/register"
-          }
-        },
-        {
-          "name": "Login",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "const res = pm.response.json();",
-                  "if (res.success && res.data?.accessToken) {",
-                  "  pm.collectionVariables.set('accessToken', res.data.accessToken);",
-                  "  pm.collectionVariables.set('refreshToken', res.data.refreshToken);",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "auth": { "type": "noauth" },
-            "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "x-lang", "value": "en" }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"email\": \"{{customerEmail}}\",\n  \"password\": \"{{customerPassword}}\"\n}"
-            },
-            "url": "{{baseUrl}}/{{apiPrefix}}/customers/login"
-          }
-        },
-        {
-          "name": "Refresh Token",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "const res = pm.response.json();",
-                  "if (res.success && res.data?.accessToken) {",
-                  "  pm.collectionVariables.set('accessToken', res.data.accessToken);",
-                  "  pm.collectionVariables.set('refreshToken', res.data.refreshToken);",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "auth": { "type": "noauth" },
-            "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
-            },
-            "url": "{{baseUrl}}/{{apiPrefix}}/customers/refresh"
-          }
-        },
-        {
-          "name": "Get Me",
-          "request": {
-            "method": "GET",
-            "header": [{ "key": "Accept", "value": "application/json" }],
-            "url": "{{baseUrl}}/{{apiPrefix}}/customers/me"
-          }
-        },
-        {
-          "name": "Edit Me",
-          "request": {
-            "method": "PATCH",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"name\": \"Updated Buyer\"\n}"
-            },
-            "url": "{{baseUrl}}/{{apiPrefix}}/customers/me"
-          }
-        },
-        {
-          "name": "Logout",
-          "request": {
-            "method": "POST",
-            "header": [{ "key": "Accept", "value": "application/json" }],
-            "url": "{{baseUrl}}/{{apiPrefix}}/customers/logout"
-          }
-        },
-        {
-          "name": "Logout All Sessions",
-          "request": {
-            "method": "POST",
-            "header": [{ "key": "Accept", "value": "application/json" }],
-            "url": "{{baseUrl}}/{{apiPrefix}}/customers/logout-all"
-          }
-        }
-      ]
-    },
-    {
-      "name": "Products",
-      "item": [
-        {
-          "name": "Create Product",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "const res = pm.response.json();",
-                  "if (res.success && res.data?.id) {",
-                  "  pm.collectionVariables.set('productId', res.data.id);",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"name\": \"Sample Product\",\n  \"price\": \"29.99\",\n  \"stock\": 100\n}"
-            },
-            "url": "{{baseUrl}}/{{apiPrefix}}/products"
-          }
-        },
-        {
-          "name": "List Products",
-          "request": {
-            "method": "GET",
-            "header": [{ "key": "Accept", "value": "application/json" }],
-            "url": "{{baseUrl}}/{{apiPrefix}}/products"
-          }
-        },
-        {
-          "name": "Get Product By Id",
-          "request": {
-            "method": "GET",
-            "header": [{ "key": "Accept", "value": "application/json" }],
-            "url": "{{baseUrl}}/{{apiPrefix}}/products/{{productId}}"
-          }
-        },
-        {
-          "name": "Edit Product",
-          "request": {
-            "method": "PATCH",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"name\": \"Updated Product\",\n  \"price\": \"34.99\",\n  \"stock\": 90\n}"
-            },
-            "url": "{{baseUrl}}/{{apiPrefix}}/products/{{productId}}"
-          }
-        },
-        {
-          "name": "Delete Product",
-          "request": {
-            "method": "DELETE",
-            "header": [{ "key": "Accept", "value": "application/json" }],
-            "url": "{{baseUrl}}/{{apiPrefix}}/products/{{productId}}"
-          }
-        }
-      ]
-    },
-    {
-      "name": "Orders",
-      "item": [
-        {
-          "name": "Create Order",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "const res = pm.response.json();",
-                  "if (res.success && res.data?.id) {",
-                  "  pm.collectionVariables.set('orderId', res.data.id);",
-                  "  if (res.data.items?.[0]?.id) {",
-                  "    pm.collectionVariables.set('orderItemId', res.data.items[0].id);",
-                  "  }",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"items\": [\n    {\n      \"productId\": \"{{productId}}\",\n      \"quantity\": 2\n    }\n  ]\n}"
-            },
-            "url": "{{baseUrl}}/{{apiPrefix}}/orders"
-          }
-        },
-        {
-          "name": "List My Orders",
-          "request": {
-            "method": "GET",
-            "header": [{ "key": "Accept", "value": "application/json" }],
-            "url": "{{baseUrl}}/{{apiPrefix}}/orders"
-          }
-        },
-        {
-          "name": "Get Order By Id",
-          "request": {
-            "method": "GET",
-            "header": [{ "key": "Accept", "value": "application/json" }],
-            "url": "{{baseUrl}}/{{apiPrefix}}/orders/{{orderId}}"
-          }
-        },
-        {
-          "name": "Append Order Item",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "const res = pm.response.json();",
-                  "if (res.success && res.data?.items?.length) {",
-                  "  pm.collectionVariables.set('orderItemId', res.data.items[res.data.items.length - 1].id);",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"productId\": \"{{productId}}\",\n  \"quantity\": 1\n}"
-            },
-            "url": "{{baseUrl}}/{{apiPrefix}}/orders/{{orderId}}/items"
-          }
-        },
-        {
-          "name": "Remove Order Item",
-          "request": {
-            "method": "DELETE",
-            "header": [{ "key": "Accept", "value": "application/json" }],
-            "url": "{{baseUrl}}/{{apiPrefix}}/orders/{{orderId}}/items/{{orderItemId}}"
-          }
-        },
-        {
-          "name": "Checkout — Wallet Only",
-          "request": {
-            "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"idempotencyKey\": \"{{$guid}}\",\n  \"paymentMode\": \"wallet_only\"\n}"
-            },
-            "url": "{{baseUrl}}/{{apiPrefix}}/orders/{{orderId}}/checkout"
-          }
-        },
-        {
-          "name": "Checkout — Provider Only (Stripe)",
-          "request": {
-            "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"idempotencyKey\": \"{{$guid}}\",\n  \"paymentMode\": \"provider_only\",\n  \"preferredProvider\": \"stripe\",\n  \"paymentMethodId\": \"pm_card_visa\"\n}"
-            },
-            "url": "{{baseUrl}}/{{apiPrefix}}/orders/{{orderId}}/checkout"
-          }
-        },
-        {
-          "name": "Checkout — Provider Only (PayPal)",
-          "request": {
-            "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"idempotencyKey\": \"{{$guid}}\",\n  \"paymentMode\": \"provider_only\",\n  \"preferredProvider\": \"paypal\",\n  \"paymentMethodId\": \"paypal_mock_method\"\n}"
-            },
-            "url": "{{baseUrl}}/{{apiPrefix}}/orders/{{orderId}}/checkout"
-          }
-        },
-        {
-          "name": "Checkout — Hybrid",
-          "request": {
-            "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"idempotencyKey\": \"{{$guid}}\",\n  \"paymentMode\": \"hybrid\",\n  \"preferredProvider\": \"stripe\",\n  \"paymentMethodId\": \"pm_card_visa\"\n}"
-            },
-            "url": "{{baseUrl}}/{{apiPrefix}}/orders/{{orderId}}/checkout"
-          }
-        }
-      ]
-    },
-    {
-      "name": "Payments",
-      "item": [
-        {
-          "name": "Get Payment By Order Id",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "const res = pm.response.json();",
-                  "if (res.success && res.data?.id) {",
-                  "  pm.collectionVariables.set('paymentId', res.data.id);",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [{ "key": "Accept", "value": "application/json" }],
-            "url": "{{baseUrl}}/{{apiPrefix}}/orders/{{orderId}}/payment"
-          }
-        },
-        {
-          "name": "Get My Payments",
-          "request": {
-            "method": "GET",
-            "header": [{ "key": "Accept", "value": "application/json" }],
-            "url": "{{baseUrl}}/{{apiPrefix}}/payments/me",
-            "description": "Returns all payments for the authenticated customer, newest first."
-          }
-        },
-        {
-          "name": "Get Payment By Id",
-          "request": {
-            "method": "GET",
-            "header": [{ "key": "Accept", "value": "application/json" }],
-            "url": "{{baseUrl}}/{{apiPrefix}}/payments/{{paymentId}}"
-          }
-        }
-      ]
-    },
-    {
-      "name": "Wallet",
-      "item": [
-        {
-          "name": "Charge Wallet — Increase",
-          "request": {
-            "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"amount\": \"100.00\",\n  \"action\": \"increase\"\n}"
-            },
-            "url": "{{baseUrl}}/{{apiPrefix}}/wallet/charge",
-            "description": "Mock/admin-style top-up for testing wallet_only and hybrid checkout."
-          }
-        },
-        {
-          "name": "Charge Wallet — Decrease",
-          "request": {
-            "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"amount\": \"10.00\",\n  \"action\": \"decrease\"\n}"
-            },
-            "url": "{{baseUrl}}/{{apiPrefix}}/wallet/charge"
-          }
-        }
-      ]
-    },
-    {
-      "name": "Flows",
-      "description": "Run requests top-to-bottom after setting productId or running Create Product first.",
-      "item": [
-        {
-          "name": "1. Register Customer",
-          "event": [
-            {
-              "listen": "prerequest",
-              "script": {
-                "exec": [
-                  "pm.collectionVariables.set('customerEmail', `buyer_${Date.now()}@example.com`);"
-                ],
-                "type": "text/javascript"
-              }
-            },
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "const res = pm.response.json();",
-                  "pm.test('Registered', () => pm.expect(res.success).to.be.true);",
-                  "if (res.data?.accessToken) {",
-                  "  pm.collectionVariables.set('accessToken', res.data.accessToken);",
-                  "  pm.collectionVariables.set('refreshToken', res.data.refreshToken);",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "auth": { "type": "noauth" },
-            "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"name\": \"Flow Buyer\",\n  \"email\": \"{{customerEmail}}\",\n  \"password\": \"{{customerPassword}}\"\n}"
-            },
-            "url": "{{baseUrl}}/{{apiPrefix}}/customers/register"
-          }
-        },
-        {
-          "name": "2. Create Product",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "const res = pm.response.json();",
-                  "pm.test('Product created', () => pm.expect(res.data?.id).to.be.a('string'));",
-                  "if (res.data?.id) pm.collectionVariables.set('productId', res.data.id);"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"name\": \"Flow Product\",\n  \"price\": \"49.99\",\n  \"stock\": 50\n}"
-            },
-            "url": "{{baseUrl}}/{{apiPrefix}}/products"
-          }
-        },
-        {
-          "name": "3. Top Up Wallet",
-          "request": {
-            "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"amount\": \"200.00\",\n  \"action\": \"increase\"\n}"
-            },
-            "url": "{{baseUrl}}/{{apiPrefix}}/wallet/charge"
-          }
-        },
-        {
-          "name": "4. Create Order",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "const res = pm.response.json();",
-                  "if (res.data?.id) pm.collectionVariables.set('orderId', res.data.id);"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"items\": [{ \"productId\": \"{{productId}}\", \"quantity\": 1 }]\n}"
-            },
-            "url": "{{baseUrl}}/{{apiPrefix}}/orders"
-          }
-        },
-        {
-          "name": "5. Checkout Hybrid",
-          "request": {
-            "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"idempotencyKey\": \"{{$guid}}\",\n  \"paymentMode\": \"hybrid\",\n  \"preferredProvider\": \"stripe\",\n  \"paymentMethodId\": \"pm_card_visa\"\n}"
-            },
-            "url": "{{baseUrl}}/{{apiPrefix}}/orders/{{orderId}}/checkout"
-          }
-        },
-        {
-          "name": "6. Get Order Status",
-          "request": {
-            "method": "GET",
-            "header": [{ "key": "Accept", "value": "application/json" }],
-            "url": "{{baseUrl}}/{{apiPrefix}}/orders/{{orderId}}"
-          }
-        }
-      ]
-    }
-  ]
+	"info": {
+		"_postman_id": "9ff67686-9d34-46ba-a37d-2396e4988e64",
+		"name": "DDD E-Commerce API Gateway",
+		"description": "Postman collection for the ddd-ecommerce api-gateway.\n\nBase URL: `{{baseUrl}}/{{apiPrefix}}`\n\nAuth: run **Register** or **Login** first; `accessToken` is saved to collection variables.\n\nResponses are wrapped: `{ \"success\": true, \"data\": { ... } }`.\n\nOptional header: `x-lang: en` or `fa` for i18n.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23412192",
+		"_collection_link": "https://planetary-comet-525195.postman.co/workspace/afra~c5392cab-9679-4675-b1d8-62690ad0b9d9/collection/23412192-9ff67686-9d34-46ba-a37d-2396e4988e64?action=share&source=collection_link&creator=23412192"
+	},
+	"item": [
+		{
+			"name": "Health",
+			"item": [
+				{
+					"name": "Get Health",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/{{apiPrefix}}/health",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"{{apiPrefix}}",
+								"health"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Customers",
+			"item": [
+				{
+					"name": "Register",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const res = pm.response.json();",
+									"if (res.success && res.data?.accessToken) {",
+									"  pm.collectionVariables.set('accessToken', res.data.accessToken);",
+									"  pm.collectionVariables.set('refreshToken', res.data.refreshToken);",
+									"}",
+									"if (res.data?.customer?.email) {",
+									"  pm.collectionVariables.set('customerEmail', res.data.customer.email);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "x-lang",
+								"value": "en"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"{{customerName}}\",\n  \"email\": \"{{customerEmail}}\",\n  \"password\": \"{{customerPassword}}\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/{{apiPrefix}}/customers/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"{{apiPrefix}}",
+								"customers",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const res = pm.response.json();",
+									"if (res.success && res.data?.accessToken) {",
+									"  pm.collectionVariables.set('accessToken', res.data.accessToken);",
+									"  pm.collectionVariables.set('refreshToken', res.data.refreshToken);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "x-lang",
+								"value": "en"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"{{customerEmail}}\",\n  \"password\": \"{{customerPassword}}\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/{{apiPrefix}}/customers/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"{{apiPrefix}}",
+								"customers",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const res = pm.response.json();",
+									"if (res.success && res.data?.accessToken) {",
+									"  pm.collectionVariables.set('accessToken', res.data.accessToken);",
+									"  pm.collectionVariables.set('refreshToken', res.data.refreshToken);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/{{apiPrefix}}/customers/refresh",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"{{apiPrefix}}",
+								"customers",
+								"refresh"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Me",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/{{apiPrefix}}/customers/me",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"{{apiPrefix}}",
+								"customers",
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit Me",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Updated Buyer\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/{{apiPrefix}}/customers/me",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"{{apiPrefix}}",
+								"customers",
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/{{apiPrefix}}/customers/logout",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"{{apiPrefix}}",
+								"customers",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout All Sessions",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/{{apiPrefix}}/customers/logout-all",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"{{apiPrefix}}",
+								"customers",
+								"logout-all"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Products",
+			"item": [
+				{
+					"name": "Create Product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const res = pm.response.json();",
+									"if (res.success && res.data?.id) {",
+									"  pm.collectionVariables.set('productId', res.data.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Sample Product\",\n  \"price\": \"29.99\",\n  \"stock\": 100\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/{{apiPrefix}}/products",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"{{apiPrefix}}",
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List Products",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/{{apiPrefix}}/products",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"{{apiPrefix}}",
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Product By Id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/{{apiPrefix}}/products/{{productId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"{{apiPrefix}}",
+								"products",
+								"{{productId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit Product",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Updated Product\",\n  \"price\": \"34.99\",\n  \"stock\": 90\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/{{apiPrefix}}/products/{{productId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"{{apiPrefix}}",
+								"products",
+								"{{productId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Product",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/{{apiPrefix}}/products/{{productId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"{{apiPrefix}}",
+								"products",
+								"{{productId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Orders",
+			"item": [
+				{
+					"name": "Create Order",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const res = pm.response.json();",
+									"if (res.success && res.data?.id) {",
+									"  pm.collectionVariables.set('orderId', res.data.id);",
+									"  if (res.data.items?.[0]?.id) {",
+									"    pm.collectionVariables.set('orderItemId', res.data.items[0].id);",
+									"  }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"items\": [\n    {\n      \"productId\": \"{{productId}}\",\n      \"quantity\": 2\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/{{apiPrefix}}/orders",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"{{apiPrefix}}",
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List My Orders",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/{{apiPrefix}}/orders",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"{{apiPrefix}}",
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Order By Id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/{{apiPrefix}}/orders/{{orderId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"{{apiPrefix}}",
+								"orders",
+								"{{orderId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Append Order Item",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const res = pm.response.json();",
+									"if (res.success && res.data?.items?.length) {",
+									"  pm.collectionVariables.set('orderItemId', res.data.items[res.data.items.length - 1].id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"productId\": \"{{productId}}\",\n  \"quantity\": 1\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/{{apiPrefix}}/orders/{{orderId}}/items",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"{{apiPrefix}}",
+								"orders",
+								"{{orderId}}",
+								"items"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Order Item",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/{{apiPrefix}}/orders/{{orderId}}/items/{{orderItemId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"{{apiPrefix}}",
+								"orders",
+								"{{orderId}}",
+								"items",
+								"{{orderItemId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Checkout — Wallet Only",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"idempotencyKey\": \"{{$guid}}\",\n  \"paymentMode\": \"wallet_only\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/{{apiPrefix}}/orders/{{orderId}}/checkout",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"{{apiPrefix}}",
+								"orders",
+								"{{orderId}}",
+								"checkout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Checkout — Provider Only",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"idempotencyKey\": \"{{$guid}}\",\n  \"paymentMode\": \"provider_only\",\n//   \"preferredProvider\": \"stripe\",\n  \"paymentMethodId\": \"pm_card_visa\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/{{apiPrefix}}/orders/{{orderId}}/checkout",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"{{apiPrefix}}",
+								"orders",
+								"{{orderId}}",
+								"checkout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Checkout — Hybrid",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"idempotencyKey\": \"{{$guid}}\",\n  \"paymentMode\": \"hybrid\",\n  \"preferredProvider\": \"stripe\",\n  \"paymentMethodId\": \"pm_card_visa\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/{{apiPrefix}}/orders/{{orderId}}/checkout",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"{{apiPrefix}}",
+								"orders",
+								"{{orderId}}",
+								"checkout"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Payments",
+			"item": [
+				{
+					"name": "Get Payment By Order Id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const res = pm.response.json();",
+									"if (res.success && res.data?.id) {",
+									"  pm.collectionVariables.set('paymentId', res.data.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/{{apiPrefix}}/orders/{{orderId}}/payment",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"{{apiPrefix}}",
+								"orders",
+								"{{orderId}}",
+								"payment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get My Payments",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/{{apiPrefix}}/payments/me",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"{{apiPrefix}}",
+								"payments",
+								"me"
+							]
+						},
+						"description": "Returns all payments for the authenticated customer, newest first."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Payment By Id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/{{apiPrefix}}/payments/{{paymentId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"{{apiPrefix}}",
+								"payments",
+								"{{paymentId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Wallet",
+			"item": [
+				{
+					"name": "Charge Wallet — Increase",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"amount\": \"100.00\",\n  \"action\": \"increase\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/{{apiPrefix}}/wallet/charge",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"{{apiPrefix}}",
+								"wallet",
+								"charge"
+							]
+						},
+						"description": "Mock/admin-style top-up for testing wallet_only and hybrid checkout."
+					},
+					"response": []
+				},
+				{
+					"name": "Charge Wallet — Decrease",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"amount\": \"10.00\",\n  \"action\": \"decrease\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/{{apiPrefix}}/wallet/charge",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"{{apiPrefix}}",
+								"wallet",
+								"charge"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Flows",
+			"item": [
+				{
+					"name": "1. Register Customer",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set('customerEmail', `buyer_${Date.now()}@example.com`);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const res = pm.response.json();",
+									"pm.test('Registered', () => pm.expect(res.success).to.be.true);",
+									"if (res.data?.accessToken) {",
+									"  pm.collectionVariables.set('accessToken', res.data.accessToken);",
+									"  pm.collectionVariables.set('refreshToken', res.data.refreshToken);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Flow Buyer\",\n  \"email\": \"{{customerEmail}}\",\n  \"password\": \"{{customerPassword}}\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/{{apiPrefix}}/customers/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"{{apiPrefix}}",
+								"customers",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2. Create Product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const res = pm.response.json();",
+									"pm.test('Product created', () => pm.expect(res.data?.id).to.be.a('string'));",
+									"if (res.data?.id) pm.collectionVariables.set('productId', res.data.id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Flow Product\",\n  \"price\": \"49.99\",\n  \"stock\": 50\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/{{apiPrefix}}/products",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"{{apiPrefix}}",
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "3. Top Up Wallet",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"amount\": \"200.00\",\n  \"action\": \"increase\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/{{apiPrefix}}/wallet/charge",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"{{apiPrefix}}",
+								"wallet",
+								"charge"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "4. Create Order",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const res = pm.response.json();",
+									"if (res.data?.id) pm.collectionVariables.set('orderId', res.data.id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"items\": [{ \"productId\": \"{{productId}}\", \"quantity\": 1 }]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/{{apiPrefix}}/orders",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"{{apiPrefix}}",
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "5. Checkout Hybrid",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"idempotencyKey\": \"{{$guid}}\",\n  \"paymentMode\": \"hybrid\",\n  \"preferredProvider\": \"stripe\",\n  \"paymentMethodId\": \"pm_card_visa\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/{{apiPrefix}}/orders/{{orderId}}/checkout",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"{{apiPrefix}}",
+								"orders",
+								"{{orderId}}",
+								"checkout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "6. Get Order Status",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/{{apiPrefix}}/orders/{{orderId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"{{apiPrefix}}",
+								"orders",
+								"{{orderId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Run requests top-to-bottom after setting productId or running Create Product first."
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{accessToken}}",
+				"type": "string"
+			}
+		]
+	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3000"
+		},
+		{
+			"key": "apiPrefix",
+			"value": "api"
+		},
+		{
+			"key": "accessToken",
+			"value": ""
+		},
+		{
+			"key": "refreshToken",
+			"value": ""
+		},
+		{
+			"key": "customerEmail",
+			"value": "buyer@example.com"
+		},
+		{
+			"key": "customerPassword",
+			"value": "Password123!"
+		},
+		{
+			"key": "customerName",
+			"value": "Test Buyer"
+		},
+		{
+			"key": "productId",
+			"value": ""
+		},
+		{
+			"key": "orderId",
+			"value": ""
+		},
+		{
+			"key": "orderItemId",
+			"value": ""
+		},
+		{
+			"key": "paymentId",
+			"value": ""
+		}
+	]
 }
