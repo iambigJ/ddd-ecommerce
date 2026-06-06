@@ -12,7 +12,6 @@ import { GetMyOrdersHandler } from '../../application/queries/handlers/get-my-or
 import { GetOrderByIdHandler } from '../../application/queries/handlers/get-order-by-id.handler';
 import { VerifyOrderOwnershipHandler } from '../../application/queries/handlers/verify-order-ownership.handler';
 import { GetCustomerOrderIdsHandler } from '../../application/queries/handlers/get-customer-order-ids.handler';
-import { OrderPaymentInitiatedHandler } from '../../application/events/handlers/payment-initiated.handler';
 import { OrderPaymentSucceededHandler } from '../../application/events/handlers/payment-succeeded.handler';
 import { OrderPaymentFailedHandler } from '../../application/events/handlers/payment-failed.handler';
 import {
@@ -35,7 +34,6 @@ const queryHandlers = [
 ];
 
 const eventHandlers = [
-  OrderPaymentInitiatedHandler,
   OrderPaymentSucceededHandler,
   OrderPaymentFailedHandler,
 ];
